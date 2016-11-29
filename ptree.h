@@ -1,26 +1,30 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-extern struct ptnode* root;
+extern struct ptnode *root;
 
-typedef enum nodetype{
+typedef enum nodetype {
+	NT_NUMBER, NT_IDENTIFIER,
+	NT_ADDITION, NT_SUBTRACTION, NT_MULTIPLICATION, NT_DIVISION,
+	NT_ASSIGNMENT, NT_UNARYPLUS, NT_UNARYMINUS, NT_STATEMENT, NT_COMPILATIONUNIT
+} NODETYPE;
 
-	NT_NUMBER, NT_addition_list, NT_addition
 
-}NODETYPE;
+struct ptnode
+{
+	int m_semanticValue;
+	NODETYPE m_type;
+	int m_serialNumber;
+	char *m_label;
 
-struct ptnode{
+	char *m_identifier;
 
-	int semanticValue;
-	int SerialNumber;
-	NODETYPE type;
-	char* graph_label;
-
-	struct ptnode* left_child;
-	struct ptnode* right_child;
-
+	struct ptnode *m_leftChild;
+	struct ptnode *m_rightChild;
 };
 
-struct ptnode* new_Node(NODETYPE n_type, struct ptnode* left, struct ptnode* right, char* yytext);
-
-void printTraversal(FILE* fp, struct ptnode* current_n);
+struct ptnode *NewNode(NODETYPE type,
+	struct ptnode *left, struct ptnode *right, char *yytext);
+void printGraphViz(FILE *fp, struct ptnode *current);
+struct ptnode *lookup(char *identifier, bool query);
+int eval(struct ptnode *current);
